@@ -64,8 +64,8 @@ function loop() {
         const p = sigmoid(z);
         logDiv.innerHTML += `\n  ${d.x1} AND ${d.x2} = ${Math.round(p)} (raw: ${p.toFixed(4)})`;
     });
-    logDiv.innerHTML += `\n\n📐 Final Weights: [${w1.toFixed(3)}, ${w2.toFixed(3)}, ${b.toFixed(3)}]`;
-    logDiv.innerHTML += `\n🎯 Notice: w1≈1.0, w2≈1.0, b≈-1.5 (exactly what we predicted!)`;
+    logDiv.innerHTML += `\n\n Final Weights: [${w1.toFixed(3)}, ${w2.toFixed(3)}, ${b.toFixed(3)}]`;
+    logDiv.innerHTML += `\n Notice: w1≈1.0, w2≈1.0, b≈-1.5 (as predicted)`;
     }
 }
 
