@@ -1,0 +1,3477 @@
+NN
+
+
+
+# Neural Networks From Scratch: Detailed Notes Using the XOR Example
+
+---
+
+# 1. What Is a Neural Network?
+
+At its core, a neural network is simply a mathematical function that learns.
+
+Instead of a programmer writing explicit rules:
+
+```text
+if input == X
+    do Y
+```
+
+we give the neural network:
+
+* examples
+* expected answers
+
+and it learns the rules itself.
+
+---
+
+## A Real-Life Analogy
+
+Imagine you're teaching a child to identify cats.
+
+You don't explain:
+
+```text
+Cats have whiskers.
+Cats have pointy ears.
+Cats have tails.
+```
+
+Instead you show:
+
+```text
+Picture → Cat
+Picture → Not Cat
+Picture → Cat
+Picture → Cat
+```
+
+After enough examples, the child starts recognizing cats.
+
+Neural networks learn in a similar way.
+
+They don't understand concepts.
+
+They simply adjust numbers until their outputs become correct.
+
+---
+
+# 2. The XOR Problem
+
+The XOR (exclusive OR) function is a classic neural network problem.
+
+Truth table:
+
+```text
+X1  X2  Output
+0   0     0
+0   1     1
+1   0     1
+1   1     0
+```
+
+Meaning:
+
+```text
+True if inputs differ.
+False if inputs are the same.
+```
+
+---
+
+## Why XOR Matters
+
+A simple linear model cannot solve XOR.
+
+This makes XOR the smallest problem that demonstrates why neural networks need hidden layers and activation functions.
+
+---
+
+# 3. The Network Architecture
+
+Your network:
+
+```text
+Input Layer
+(X1, X2)
+
+      ↓
+
+Hidden Layer
+(H1, H2)
+
+      ↓
+
+Output Layer
+(OUT)
+```
+
+In code:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1
+z2 = x1*w21 + x2*w22 + bh2
+```
+
+Hidden neurons:
+
+```js
+h1 = activation(z1)
+h2 = activation(z2)
+```
+
+Output neuron:
+
+```js
+z_out = h1*wo1 + h2*wo2 + bout
+out = sigmoid(z_out)
+```
+
+---
+
+# 4. What Are Weights?
+
+Weights determine how strongly a neuron listens to an input.
+
+Example:
+
+```js
+z = 5*x1 + 0.1*x2
+```
+
+The neuron listens much more strongly to x1 than x2.
+
+---
+
+## Analogy: Volume Knobs
+
+Imagine two microphones feeding into a speaker.
+
+Each microphone has a volume knob.
+
+```text
+Input 1 → Volume Knob → Speaker
+Input 2 → Volume Knob → Speaker
+```
+
+The weights are those volume knobs.
+
+Higher weight:
+
+```text
+Listen more
+```
+
+Lower weight:
+
+```text
+Listen less
+```
+
+Negative weight:
+
+```text
+Listen, but invert the meaning
+```
+
+---
+
+# 5. What Are Biases?
+
+A neuron isn't only influenced by inputs.
+
+It also has a default tendency.
+
+Mathematically:
+
+```js
+z = w1*x1 + w2*x2 + b
+```
+
+The bias is:
+
+```js
+b
+```
+
+---
+
+## Analogy: Thermostat
+
+Imagine a thermostat.
+
+Even before measuring temperature, it may already lean toward:
+
+```text
+Heating
+```
+
+or
+
+```text
+Cooling
+```
+
+That built-in preference is like a bias.
+
+---
+
+# 6. Why One Bias Per Neuron?
+
+Many beginners think:
+
+```text
+Two inputs
+→ two weights
+→ two biases?
+```
+
+No.
+
+A neuron has:
+
+```text
+N inputs
+N weights
+1 bias
+```
+
+Example:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1
+```
+
+This is correct.
+
+---
+
+## Why Not Multiple Biases?
+
+Suppose:
+
+```js
+z = x1*w1 + x2*w2 + b1 + b2
+```
+
+Then:
+
+```js
+b = b1 + b2
+```
+
+and:
+
+```js
+z = x1*w1 + x2*w2 + b
+```
+
+Multiple biases collapse into one.
+
+They add no extra power.
+
+---
+
+# 7. Forward Propagation
+
+Forward propagation means:
+
+```text
+Feed data through the network.
+```
+
+Input:
+
+```text
+(1, 0)
+```
+
+↓
+
+Hidden Layer
+
+↓
+
+Output Layer
+
+↓
+
+Prediction
+
+---
+
+## Analogy: Factory Assembly Line
+
+Imagine a factory:
+
+```text
+Raw Materials
+    ↓
+Assembly
+    ↓
+Painting
+    ↓
+Packaging
+    ↓
+Finished Product
+```
+
+Data moves forward through stages.
+
+That is forward propagation.
+
+---
+
+# 8. What Is Loss?
+
+Loss measures:
+
+```text
+How wrong was the prediction?
+```
+
+Your code uses:
+
+```js
+loss = (out - target) ** 2
+```
+
+This is Mean Squared Error.
+
+Example:
+
+Target:
+
+```text
+1
+```
+
+Prediction:
+
+```text
+0.9
+```
+
+Loss:
+
+```text
+(0.9 - 1)^2
+=
+0.01
+```
+
+Small error.
+
+---
+
+Prediction:
+
+```text
+0.2
+```
+
+Loss:
+
+```text
+(0.2 - 1)^2
+=
+0.64
+```
+
+Large error.
+
+---
+
+# 9. The Goal Of Training
+
+Training means:
+
+```text
+Reduce loss.
+```
+
+That is the entire goal.
+
+Every weight update is trying to answer:
+
+> How should I change my numbers to make the loss smaller?
+
+---
+
+# 10. What Is Backpropagation?
+
+Backpropagation is the algorithm that determines:
+
+```text
+Which weights caused the error?
+```
+
+and
+
+```text
+How much should each weight change?
+```
+
+---
+
+## The Chair Factory Analogy
+
+Imagine:
+
+```text
+Wood Cutter
+    ↓
+Assembler
+    ↓
+Painter
+    ↓
+Customer
+```
+
+Customer complains:
+
+```text
+Chair is bad.
+```
+
+Who is responsible?
+
+Maybe:
+
+```text
+10% Wood Cutter
+40% Assembler
+50% Painter
+```
+
+Backpropagation performs this blame assignment.
+
+---
+
+# 11. Why Backpropagation Exists
+
+Without backpropagation:
+
+```text
+We know the answer is wrong.
+```
+
+But we don't know:
+
+```text
+Which weight caused the problem.
+```
+
+Backpropagation distributes blame through the network.
+
+---
+
+# 12. The Chain Rule
+
+Backpropagation is basically repeated use of the chain rule from calculus.
+
+A simplified form:
+
+```text
+dLoss/dWeight
+=
+(dLoss/dOutput)
+×
+(dOutput/dNeuron)
+×
+(dNeuron/dWeight)
+```
+
+Each term asks:
+
+```text
+How sensitive is one thing to another?
+```
+
+Multiply them together and we know:
+
+```text
+How sensitive the loss is to a weight.
+```
+
+---
+
+# 13. Output Layer Backpropagation
+
+Your code:
+
+```js
+const dLoss_dOut =
+    2 * (out - target);
+```
+
+This answers:
+
+```text
+How much does the loss change if output changes?
+```
+
+---
+
+Then:
+
+```js
+const dOut_dZout =
+    sigmoidDerivative(out);
+```
+
+This answers:
+
+```text
+How much does output change if z_out changes?
+```
+
+---
+
+Then:
+
+```js
+const dLoss_dZout =
+    dLoss_dOut * dOut_dZout;
+```
+
+Chain rule.
+
+---
+
+# 14. Hidden Layer Backpropagation
+
+After computing output gradients:
+
+```js
+const dLoss_dH1 =
+    dLoss_dZout * this.wo1;
+
+const dLoss_dH2 =
+    dLoss_dZout * this.wo2;
+```
+
+Now the error is flowing backward.
+
+The hidden neurons receive blame.
+
+---
+
+# 15. Updating Weights
+
+Gradient descent:
+
+```js
+weight -= learningRate * gradient
+```
+
+Example:
+
+```js
+weight = 5
+gradient = 2
+lr = 0.1
+```
+
+New weight:
+
+```js
+5 - 0.1*2
+=
+4.8
+```
+
+The weight moves in the direction that lowers loss.
+
+---
+
+## Analogy: Walking Down A Hill
+
+Imagine standing on a mountain blindfolded.
+
+Goal:
+
+```text
+Reach the valley.
+```
+
+You feel the slope beneath your feet.
+
+If the slope points right:
+
+```text
+Step left.
+```
+
+If the slope points left:
+
+```text
+Step right.
+```
+
+Eventually:
+
+```text
+Valley = Minimum Loss
+```
+
+Gradient descent is hill-climbing in reverse.
+
+---
+
+# 16. Learning Rate
+
+Your code:
+
+```js
+this.lr = 0.1;
+```
+
+Learning rate controls step size.
+
+Small:
+
+```text
+Slow but stable
+```
+
+Large:
+
+```text
+Fast but dangerous
+```
+
+---
+
+## Too Small
+
+```text
+Learning takes forever.
+```
+
+---
+
+## Too Large
+
+```text
+Overshoots the solution.
+```
+
+Sometimes causes:
+
+```text
+Infinity
+NaN
+```
+
+---
+
+# 17. Why Activation Functions Exist
+
+Without activations:
+
+```text
+Linear Layer
+↓
+Linear Layer
+↓
+Linear Layer
+```
+
+is still:
+
+```text
+One Linear Layer
+```
+
+No matter how many layers you stack.
+
+---
+
+## Example
+
+```js
+y = 2*(3x+1)+5
+```
+
+becomes:
+
+```js
+y = 6x+7
+```
+
+Still linear.
+
+---
+
+Therefore:
+
+Without activations:
+
+```text
+Deep networks are pointless.
+```
+
+---
+
+# 18. Activation Functions Add Non-Linearity
+
+Activations allow:
+
+```text
+Curves
+Bends
+Complex boundaries
+```
+
+instead of straight lines.
+
+This allows solving XOR.
+
+---
+
+# 19. Sigmoid
+
+Definition:
+
+```js
+sigmoid(x) =
+1/(1+e^-x)
+```
+
+Output:
+
+```text
+0 → 1
+```
+
+Used in your output layer.
+
+---
+
+Derivative:
+
+```js
+sigmoid'(x)
+=
+sigmoid(x)*(1-sigmoid(x))
+```
+
+In code:
+
+```js
+function sigmoidDerivative(output) {
+    return output * (1 - output);
+}
+```
+
+---
+
+Important:
+
+This function expects:
+
+```text
+sigmoid output
+```
+
+not:
+
+```text
+raw z
+```
+
+---
+
+# 20. A Bug We Found
+
+You accidentally wrote:
+
+```js
+sigmoidDerivative(z1)
+```
+
+instead of:
+
+```js
+sigmoidDerivative(h1)
+```
+
+where:
+
+```js
+h1 = sigmoid(z1)
+```
+
+This caused:
+
+```text
+Huge gradients
+Infinity
+NaN
+```
+
+because:
+
+```js
+z1*(1-z1)
+```
+
+is not the derivative of sigmoid.
+
+---
+
+# 21. Softplus
+
+Definition:
+
+```js
+softplus(x)
+=
+ln(1+e^x)
+```
+
+Looks like a smooth ReLU.
+
+Derivative:
+
+```js
+softplus'(x)
+=
+sigmoid(x)
+```
+
+---
+
+# 22. Tanh
+
+Definition:
+
+```js
+tanh(x)
+```
+
+Output:
+
+```text
+-1 → +1
+```
+
+Derivative:
+
+```js
+1 - tanh(x)^2
+```
+
+Code:
+
+```js
+function tanhDerivative(y) {
+    return 1 - y*y;
+}
+```
+
+where:
+
+```js
+y = tanh(x)
+```
+
+---
+
+# 23. Why Tanh Worked Better
+
+You observed:
+
+```text
+tanh  → best
+sigmoid → okay
+softplus → worst
+```
+
+This makes sense.
+
+---
+
+## Tanh Is Zero-Centered
+
+Outputs:
+
+```text
+-1 to +1
+```
+
+instead of:
+
+```text
+0 to 1
+```
+
+This creates more balanced gradients.
+
+Training becomes easier.
+
+---
+
+## XOR Likes Positive And Negative Signals
+
+Tanh can naturally represent:
+
+```text
+Yes
+No
+```
+
+using:
+
+```text
++1
+-1
+```
+
+Softplus cannot.
+
+Softplus is always positive.
+
+---
+
+# 24. Why Activation Functions Affect Learning
+
+They determine:
+
+1. Forward information flow
+2. Backward gradient flow
+
+Both are critical.
+
+A poor activation:
+
+```text
+Weak gradients
+Slow learning
+```
+
+A good activation:
+
+```text
+Strong gradients
+Fast learning
+```
+
+---
+
+# 25. Why Networks Sometimes Produce NaN
+
+Common causes:
+
+### Gradient Explosion
+
+Huge gradients
+
+↓
+
+Huge updates
+
+↓
+
+Huge weights
+
+↓
+
+Infinity
+
+↓
+
+NaN
+
+---
+
+### Numerical Overflow
+
+Example:
+
+```js
+Math.exp(1000)
+```
+
+becomes:
+
+```text
+Infinity
+```
+
+---
+
+Then:
+
+```js
+Infinity - Infinity
+```
+
+becomes:
+
+```text
+NaN
+```
+
+---
+
+# 26. Testing The Network
+
+You eventually tested:
+
+```js
+Math.round(out)
+```
+
+against:
+
+```js
+target
+```
+
+for all four XOR cases.
+
+Example:
+
+```js
+0 XOR 0 → 0
+0 XOR 1 → 1
+1 XOR 0 → 1
+1 XOR 1 → 0
+```
+
+If all predictions match:
+
+```text
+PASS
+```
+
+Otherwise:
+
+```text
+FAIL
+```
+
+---
+
+# 27. What The Network Is Really Doing
+
+The network is not learning:
+
+```text
+XOR
+```
+
+as a concept.
+
+Instead it learns:
+
+```text
+A set of weights and biases
+```
+
+that happen to produce XOR outputs.
+
+The intelligence is not in the code.
+
+The intelligence is stored in the learned parameters.
+
+---
+
+# Final Mental Model
+
+A neural network is:
+
+```text
+A giant mathematical machine
+```
+
+containing:
+
+```text
+Weights
+Biases
+Activation Functions
+```
+
+Training consists of:
+
+```text
+1. Forward Pass
+2. Compute Loss
+3. Backpropagation
+4. Update Parameters
+5. Repeat
+```
+
+Backpropagation is a blame-assignment system that uses the chain rule to determine how much each parameter contributed to the final error.
+
+Activation functions provide the non-linearity that allows the network to learn complex patterns like XOR.
+
+Without activation functions:
+
+```text
+Deep networks collapse into a single linear function.
+```
+
+Without backpropagation:
+
+```text
+The network would never know which weights to change.
+```
+
+Together, forward propagation, loss functions, backpropagation, gradient descent, and activation functions form the foundation of nearly every modern neural network.
+
+
+What you're asking for is essentially a set of learning notes or a mini-chapter, not something you intend to send or publish, so I'll keep it as a normal explanation rather than a writing block.
+
+---
+
+# Neural Networks From Scratch: Understanding XOR, Backpropagation, Activations, and Training
+
+## 1. What is a Neural Network?
+
+At its core, a neural network is just a mathematical function that learns from examples.
+
+Imagine you wanted to build a machine that predicts whether a picture contains a cat.
+
+You could try to manually write rules:
+
+```text
+If pointy ears AND whiskers AND tail
+    THEN cat
+```
+
+But real images are messy.
+
+Instead, we build a system that learns the rules itself.
+
+A neural network is essentially:
+
+```text
+Inputs
+   ↓
+Adjustable Parameters
+   ↓
+Output
+```
+
+The adjustable parameters are:
+
+```text
+Weights
+Biases
+```
+
+Training is simply the process of finding good values for those weights and biases.
+
+---
+
+# 2. What Problem Are We Solving?
+
+The XOR problem.
+
+The XOR truth table is:
+
+| x1 | x2 | XOR |
+| -- | -- | --- |
+| 0  | 0  | 0   |
+| 0  | 1  | 1   |
+| 1  | 0  | 1   |
+| 1  | 1  | 0   |
+
+Notice something interesting:
+
+```text
+Same inputs → 0
+Different inputs → 1
+```
+
+---
+
+# 3. Why XOR Is Important
+
+XOR is famous because it cannot be solved by a single linear neuron.
+
+Imagine plotting:
+
+```text
+(0,0) → 0
+(0,1) → 1
+(1,0) → 1
+(1,1) → 0
+```
+
+There is no straight line that separates the 1s from the 0s.
+
+This is called:
+
+```text
+Not linearly separable
+```
+
+A simple neuron can only learn linear relationships.
+
+To solve XOR we need:
+
+```text
+Multiple neurons
++
+Activation functions
+```
+
+---
+
+# 4. Your Network Architecture
+
+Your network looks like this:
+
+```text
+Input Layer
+
+X1       X2
+ ●--------\
+ |         \
+ |          \
+ |           \
+ |            \
+ v             v
+
+H1           H2
+ ●------------●
+   \         /
+    \       /
+     \     /
+      \   /
+       \ /
+        v
+
+      OUT
+       ●
+```
+
+More formally:
+
+```text
+2 Inputs
+↓
+2 Hidden Neurons
+↓
+1 Output Neuron
+```
+
+---
+
+# 5. What Are Weights?
+
+Every connection has a weight.
+
+Example:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1;
+```
+
+The weights determine how much a neuron listens to each input.
+
+Think of voting.
+
+Suppose you're deciding where to eat.
+
+Inputs:
+
+```text
+Friend A says pizza
+Friend B says burgers
+```
+
+Weights determine whose opinion matters more.
+
+Example:
+
+```text
+Friend A weight = 5
+Friend B weight = 1
+```
+
+Then Friend A's opinion has much more influence.
+
+That is exactly what weights do.
+
+---
+
+# 6. What Is a Bias?
+
+Your neuron:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1;
+```
+
+contains:
+
+```text
+Weights
++
+Bias
+```
+
+The bias acts like a default opinion.
+
+Imagine a thermostat.
+
+Even before measuring temperature it may already lean toward:
+
+```text
+"Turn heating on"
+```
+
+The bias represents that initial tendency.
+
+---
+
+# 7. One Bias Per Neuron
+
+You asked:
+
+> Since z1 receives two inputs, shouldn't it have two biases?
+
+No.
+
+A neuron has:
+
+```text
+N Inputs
+N Weights
+1 Bias
+```
+
+Example:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1;
+```
+
+This is correct.
+
+The bias belongs to the neuron itself.
+
+---
+
+# 8. The Forward Pass
+
+The forward pass means:
+
+```text
+Take inputs
+Run calculations
+Produce output
+```
+
+Your code:
+
+```js
+const z1 = x1*w11 + x2*w12 + bh1;
+const z2 = x1*w21 + x2*w22 + bh2;
+```
+
+This computes the hidden neurons.
+
+Then:
+
+```js
+const h1 = tanh(z1);
+const h2 = tanh(z2);
+```
+
+(or sigmoid/softplus)
+
+Then:
+
+```js
+const z_out = h1*wo1 + h2*wo2 + bout;
+const out = sigmoid(z_out);
+```
+
+The result:
+
+```text
+out
+```
+
+is the network's prediction.
+
+---
+
+# 9. Why Activation Functions Exist
+
+This is one of the most important concepts.
+
+Suppose there were no activation functions.
+
+Then every neuron would only do:
+
+```js
+z = wx + b;
+```
+
+A linear function.
+
+Stacking many linear functions together still gives:
+
+```text
+A linear function
+```
+
+Example:
+
+```text
+y = 2(3x+1)+5
+```
+
+becomes:
+
+```text
+y = 6x+7
+```
+
+Still a line.
+
+Without activations:
+
+```text
+Deep network
+=
+One big linear equation
+```
+
+Meaning XOR remains impossible.
+
+---
+
+# 10. What Does an Activation Function Do?
+
+The activation function introduces non-linearity.
+
+Instead of:
+
+```text
+Straight lines
+```
+
+the network can learn:
+
+```text
+Curves
+Boundaries
+Complex patterns
+```
+
+Think of it like adding joints to a robotic arm.
+
+Without joints:
+
+```text
+Rigid stick
+```
+
+With joints:
+
+```text
+Flexible arm
+```
+
+Activation functions give the network flexibility.
+
+---
+
+# 11. Sigmoid
+
+The sigmoid function:
+
+[
+\sigma(x)=\frac1{1+e^{-x}}
+]
+
+Outputs:
+
+```text
+0 → 1
+```
+
+Examples:
+
+```text
+sigmoid(-100) ≈ 0
+sigmoid(0) = 0.5
+sigmoid(100) ≈ 1
+```
+
+Shape:
+
+```text
+      ___
+    /
+  /
+ /
+```
+
+---
+
+# 12. Sigmoid Derivative
+
+Derivative:
+
+[
+\sigma(x)(1-\sigma(x))
+]
+
+Your implementation:
+
+```js
+function sigmoidDerivative(y){
+    return y*(1-y);
+}
+```
+
+Notice:
+
+```text
+Input = sigmoid output
+```
+
+not:
+
+```text
+Input = raw z value
+```
+
+This distinction caused one of the bugs you encountered.
+
+---
+
+# 13. The Bug We Found
+
+You originally had:
+
+```js
+const dH1_dZ1 = sigmoidDerivative(z1);
+```
+
+But:
+
+```js
+sigmoidDerivative()
+```
+
+expects:
+
+```text
+sigmoid(z1)
+```
+
+not:
+
+```text
+z1
+```
+
+When z1 became large:
+
+```text
+z1 = -5.79×10^159
+```
+
+the derivative calculation exploded.
+
+Result:
+
+```text
+-Infinity
+```
+
+Then:
+
+```text
+Weights → Infinity
+Gradients → Infinity
+Eventually → NaN
+```
+
+---
+
+# 14. Softplus
+
+Softplus:
+
+[
+softplus(x)=\ln(1+e^x)
+]
+
+Outputs:
+
+```text
+0 → ∞
+```
+
+Derivative:
+
+[
+softplus'(x)=sigmoid(x)
+]
+
+Interesting fact:
+
+The derivative of Softplus is Sigmoid.
+
+---
+
+# 15. Tanh
+
+Tanh:
+
+[
+tanh(x)
+]
+
+Outputs:
+
+```text
+-1 → 1
+```
+
+Examples:
+
+```text
+tanh(-100) ≈ -1
+tanh(0) = 0
+tanh(100) ≈ 1
+```
+
+Derivative:
+
+[
+1 - tanh^2(x)
+]
+
+Implementation:
+
+```js
+function tanhDerivative(y){
+    return 1 - y*y;
+}
+```
+
+where:
+
+```text
+y = tanh(x)
+```
+
+---
+
+# 16. Why Tanh Worked Better
+
+You observed:
+
+```text
+Tanh = best
+Sigmoid = okay
+Softplus = worst
+```
+
+This makes sense.
+
+---
+
+## Sigmoid outputs
+
+```text
+0 to 1
+```
+
+Always positive.
+
+---
+
+## Tanh outputs
+
+```text
+-1 to 1
+```
+
+Positive and negative.
+
+This gives the network more expressive power.
+
+Neurons can communicate:
+
+```text
+Positive evidence
+Negative evidence
+```
+
+instead of only positive evidence.
+
+---
+
+## Softplus outputs
+
+```text
+0 to ∞
+```
+
+Always positive.
+
+For XOR, that is not ideal.
+
+The network has fewer ways to represent useful internal states.
+
+---
+
+# 17. What Is Training?
+
+Training means:
+
+```text
+Guess
+Measure error
+Adjust
+Repeat
+```
+
+Over and over.
+
+---
+
+# 18. The Loss Function
+
+Your loss:
+
+```js
+loss = (out-target)**2;
+```
+
+This is Mean Squared Error for a single sample.
+
+Examples:
+
+Correct prediction:
+
+```text
+target = 1
+output = 0.99
+
+loss ≈ 0
+```
+
+Bad prediction:
+
+```text
+target = 1
+output = 0.1
+
+loss = 0.81
+```
+
+Large loss means:
+
+```text
+We're wrong
+```
+
+Small loss means:
+
+```text
+We're correct
+```
+
+---
+
+# 19. What Is Backpropagation?
+
+Backpropagation is probably the most important concept in neural networks.
+
+Think of a factory.
+
+---
+
+Imagine:
+
+```text
+Wood Cutter
+ ↓
+Assembler
+ ↓
+Painter
+ ↓
+Chair
+```
+
+A customer complains:
+
+```text
+The chair is bad
+```
+
+Question:
+
+```text
+Who is responsible?
+```
+
+The painter?
+
+The assembler?
+
+The cutter?
+
+How much blame does each receive?
+
+---
+
+Backpropagation answers exactly that question.
+
+---
+
+# 20. The Purpose of Backpropagation
+
+Backpropagation determines:
+
+```text
+Which weight caused the error?
+How much did it contribute?
+```
+
+Once we know:
+
+```text
+Who is to blame
+```
+
+we can fix them.
+
+---
+
+# 21. The Chain Rule
+
+Backpropagation is just repeated use of the chain rule.
+
+Example:
+
+[
+\frac{dLoss}{dWeight}
+=====================
+
+\frac{dLoss}{dOutput}
+\times
+\frac{dOutput}{dNeuron}
+\times
+\frac{dNeuron}{dWeight}
+]
+
+This computes:
+
+```text
+How much changing this weight
+changes the loss
+```
+
+---
+
+# 22. Output Layer Backprop
+
+Your code:
+
+```js
+const dLoss_dOut =
+    2*(out-target);
+```
+
+This measures:
+
+```text
+How sensitive is loss
+to output?
+```
+
+Then:
+
+```js
+const dOut_dZout =
+    sigmoidDerivative(out);
+```
+
+Then:
+
+```js
+const dLoss_dZout =
+    dLoss_dOut*dOut_dZout;
+```
+
+This gives the blame assigned to the output neuron.
+
+---
+
+# 23. Output Weight Gradients
+
+For:
+
+```js
+z_out =
+h1*wo1 +
+h2*wo2 +
+bout;
+```
+
+the gradients become:
+
+```js
+dW_o1 = dLoss_dZout*h1;
+dW_o2 = dLoss_dZout*h2;
+```
+
+These tell us:
+
+```text
+How much should wo1 change?
+How much should wo2 change?
+```
+
+---
+
+# 24. Hidden Layer Backprop
+
+The blame continues backward.
+
+```js
+dLoss_dH1 =
+    dLoss_dZout*wo1;
+```
+
+Meaning:
+
+```text
+How much did H1 contribute
+to the output error?
+```
+
+Then:
+
+```js
+dH1_dZ1 =
+    tanhDerivative(h1);
+```
+
+This accounts for the activation function.
+
+Finally:
+
+```js
+dW_11 =
+dLoss_dH1 *
+dH1_dZ1 *
+x1;
+```
+
+This gives:
+
+```text
+How much should w11 change?
+```
+
+---
+
+# 25. Gradient Descent
+
+After all gradients are computed:
+
+```js
+weight -= learningRate * gradient;
+```
+
+Example:
+
+```js
+w11 -= 0.1*dW_11;
+```
+
+Meaning:
+
+```text
+Move slightly
+in the direction
+that reduces loss.
+```
+
+---
+
+# 26. Why It's Called Gradient Descent
+
+Imagine standing on a mountain in thick fog.
+
+You want to reach the bottom.
+
+You can't see the whole mountain.
+
+But you can feel:
+
+```text
+Which direction slopes downward?
+```
+
+Take a small step.
+
+Repeat.
+
+Eventually:
+
+```text
+You reach a valley.
+```
+
+Training works exactly the same way.
+
+---
+
+# 27. Why NaN Happened
+
+You discovered:
+
+```text
+Weights became Infinity
+Then NaN
+```
+
+The root cause was:
+
+```text
+Incorrect derivative calculation
+```
+
+You fed:
+
+```js
+sigmoidDerivative(z1)
+```
+
+instead of:
+
+```js
+sigmoidDerivative(h1)
+```
+
+which caused enormous gradients.
+
+Those gradients produced:
+
+```text
+Infinite updates
+Infinite weights
+NaN values
+```
+
+---
+
+# 28. Choosing Activation Functions
+
+There is no universally perfect activation.
+
+Different problems favor different choices.
+
+Typical modern defaults:
+
+```text
+Hidden Layers:
+ReLU
+Tanh
+GELU
+
+Output Layer:
+Depends on task
+```
+
+Examples:
+
+```text
+Binary Classification → Sigmoid
+
+Multiple Classes → Softmax
+
+Regression → Linear Output
+```
+
+---
+
+# 29. How New Activations Are Discovered
+
+Mostly experimentation.
+
+Researchers ask:
+
+```text
+Can we make training easier?
+Can we reduce vanishing gradients?
+Can we improve convergence?
+```
+
+Then they test new functions.
+
+Examples:
+
+```text
+Sigmoid
+Tanh
+ReLU
+Leaky ReLU
+ELU
+SELU
+GELU
+Swish
+Mish
+```
+
+Most began as someone's idea:
+
+```text
+"What happens if we change the shape a little?"
+```
+
+Then thousands of experiments determined whether it helped.
+
+---
+
+# 30. What You Have Built
+
+Even though it only solves XOR, your project already contains the fundamental components used in modern neural networks:
+
+```text
+Weights
+Biases
+Forward Pass
+Activation Functions
+Loss Function
+Backpropagation
+Gradient Descent
+Training Loop
+Evaluation
+```
+
+The same principles scale all the way from your XOR network to massive systems with billions of parameters. The main difference is size and computational power—not the underlying mathematics.
+
+=====
+---
+=====
+
+Great project. Writing a neural network from scratch is one of the best ways to understand what is actually happening under the hood.
+
+Before looking for bugs, it's worth building the mental model of **why backpropagation exists at all**.
+
+---
+
+# 1. What is a neural network?
+
+At its core, a neural network is just a giant mathematical function.
+
+For XOR, you're trying to learn:
+
+```
+(0,0) → 0
+(0,1) → 1
+(1,0) → 1
+(1,1) → 0
+```
+
+Instead of hardcoding the logic, we give the network some adjustable numbers called **weights** and **biases**.
+
+The network computes:
+
+```
+inputs
+  ↓
+weighted sums
+  ↓
+activation functions
+  ↓
+prediction
+```
+
+For your network:
+
+```
+X1 ----\
+        > H1 ----\
+X2 ----/          \
+                  > OUT
+X1 ----\          /
+        > H2 ----/
+X2 ----/
+```
+
+The weights are:
+
+```
+w11 w12
+w21 w22
+wo1 wo2
+```
+
+and the biases are:
+
+```
+bh1 bh2
+bout
+```
+
+---
+
+# 2. What is training?
+
+Training means:
+
+> Repeatedly adjust weights so predictions become closer to targets.
+
+The process is:
+
+```
+1. Make prediction
+2. Measure error
+3. Figure out who caused the error
+4. Adjust weights
+5. Repeat
+```
+
+Steps 3 and 4 are what backpropagation does.
+
+---
+
+# 3. Real-world analogy for backpropagation
+
+Imagine a factory making chairs.
+
+There are multiple workers:
+
+```
+Wood Cutter
+     ↓
+Assembler
+     ↓
+Painter
+     ↓
+Finished Chair
+```
+
+Customer says:
+
+> "This chair is terrible."
+
+Who is responsible?
+
+Maybe:
+
+* cutter cut badly
+* assembler assembled badly
+* painter painted badly
+
+You need a way to distribute blame.
+
+Backpropagation is exactly that:
+
+> A mathematical blame assignment system.
+
+The final error is measured at the output.
+
+Then the blame is passed backwards:
+
+```
+Output layer
+     ↑
+Hidden layer
+     ↑
+Input connections
+```
+
+Every weight gets told:
+
+> "You contributed this much to the mistake."
+
+Then the weight changes slightly.
+
+---
+
+# 4. Forward pass
+
+Your forward pass:
+
+```js
+const z1 = x1 * this.w11 + x2 * this.w12 + this.bh1;
+const z2 = x1 * this.w21 + x2 * this.w22 + this.bh2;
+```
+
+This computes:
+
+[
+z_1 = x_1w_{11} + x_2w_{12} + b_{h1}
+]
+
+[
+z_2 = x_1w_{21} + x_2w_{22} + b_{h2}
+]
+
+These are called **pre-activations**.
+
+Then:
+
+```js
+const h1 = softplus(z1);
+const h2 = softplus(z2);
+```
+
+Applies an activation function.
+
+Then:
+
+```js
+const z_out = h1 * this.wo1 + h2 * this.wo2 + this.bout;
+```
+
+[
+z_{out} = h_1w_{o1} + h_2w_{o2} + b_{out}
+]
+
+Then:
+
+```js
+const out = sigmoid(z_out);
+```
+
+[
+out = \sigma(z_{out})
+]
+
+which becomes the prediction.
+
+---
+
+# 5. Why activation functions exist
+
+Without activations:
+
+```
+Linear layer
+→ Linear layer
+→ Linear layer
+```
+
+collapses into:
+
+```
+One big linear layer
+```
+
+No extra power.
+
+For XOR this is fatal because XOR is not linearly separable.
+
+Activations introduce non-linearity.
+
+That allows learning curved decision boundaries.
+
+---
+
+# 6. Why XOR needs a hidden layer
+
+A single neuron cannot learn XOR.
+
+Imagine plotting:
+
+```
+0,0 → 0
+0,1 → 1
+1,0 → 1
+1,1 → 0
+```
+
+No straight line separates those classes.
+
+A hidden layer creates intermediate features:
+
+```
+H1 learns:
+"At least one input is on"
+
+H2 learns:
+"Both inputs are on"
+
+Output combines them
+```
+
+That's why XOR is the classic neural network example.
+
+---
+
+# 7. Loss function
+
+Your loss:
+
+```js
+const loss = (out - target) ** 2;
+```
+
+This is Mean Squared Error (without averaging).
+
+Mathematically:
+
+[
+L = (out-target)^2
+]
+
+Examples:
+
+Prediction:
+
+```
+0.9
+```
+
+Target:
+
+```
+1
+```
+
+Loss:
+
+[
+(0.9-1)^2=0.01
+]
+
+Small error.
+
+Prediction:
+
+```
+0.1
+```
+
+Target:
+
+```
+1
+```
+
+Loss:
+
+[
+0.81
+]
+
+Large error.
+
+---
+
+# 8. What derivatives mean
+
+This is the hardest concept at first.
+
+A derivative answers:
+
+> "If I change this value a tiny bit, how much does the loss change?"
+
+Suppose:
+
+```
+weight = 0.5
+```
+
+If increasing it slightly:
+
+```
+makes loss larger
+```
+
+then derivative is positive.
+
+If increasing it:
+
+```
+makes loss smaller
+```
+
+then derivative is negative.
+
+So derivatives tell us:
+
+> Which direction should we move?
+
+---
+
+# 9. Chain rule (the heart of backprop)
+
+Suppose:
+
+```
+weight
+ ↓
+hidden neuron
+ ↓
+output neuron
+ ↓
+loss
+```
+
+Weight affects hidden.
+
+Hidden affects output.
+
+Output affects loss.
+
+So:
+
+[
+\frac{\partial L}{\partial w}
+=============================
+
+\frac{\partial L}{\partial out}
+\times
+\frac{\partial out}{\partial z}
+\times
+\frac{\partial z}{\partial w}
+]
+
+This is the chain rule.
+
+Backpropagation is essentially:
+
+> Applying the chain rule repeatedly from the output backwards.
+
+---
+
+# 10. Output layer gradients
+
+Your code:
+
+```js
+const dLoss_dOut = 2 * (out - target);
+```
+
+Correct.
+
+Because:
+
+[
+L=(out-target)^2
+]
+
+Derivative:
+
+[
+\frac{\partial L}{\partial out}
+===============================
+
+2(out-target)
+]
+
+---
+
+Then:
+
+```js
+const dOut_dZout = sigmoidDerivative(out);
+```
+
+Since
+
+[
+\sigma'(z)=\sigma(z)(1-\sigma(z))
+]
+
+and
+
+```js
+out = sigmoid(z_out)
+```
+
+you can compute:
+
+```js
+out * (1 - out)
+```
+
+Correct.
+
+---
+
+Then:
+
+```js
+const dLoss_dZout =
+    dLoss_dOut * dOut_dZout;
+```
+
+Chain rule.
+
+Correct.
+
+---
+
+# 11. Output weight gradients
+
+```js
+const dW_o1 = dLoss_dZout * h1;
+const dW_o2 = dLoss_dZout * h2;
+```
+
+Because:
+
+[
+z_{out}
+=======
+
+h_1w_{o1}+h_2w_{o2}+b
+]
+
+Derivative wrt (w_{o1}):
+
+[
+\frac{\partial z_{out}}{\partial w_{o1}}
+========================================
+
+h_1
+]
+
+Correct.
+
+---
+
+# 12. Hidden layer gradients
+
+You compute:
+
+```js
+const dLoss_dH1 =
+    dLoss_dZout * this.wo1;
+```
+
+Correct.
+
+Because:
+
+[
+z_{out}
+=======
+
+h_1w_{o1}
+]
+
+so:
+
+[
+\frac{\partial z_{out}}
+{\partial h_1}
+==============
+
+w_{o1}
+]
+
+---
+
+Then:
+
+```js
+const dH1_dZ1 = softplusDerivative(z1);
+```
+
+Correct.
+
+Since:
+
+[
+softplus(x)=\ln(1+e^x)
+]
+
+Derivative:
+
+[
+\sigma(x)
+]
+
+which is exactly what you coded.
+
+---
+
+Then:
+
+```js
+const dW_11 =
+    dLoss_dH1 * dH1_dZ1 * x1;
+```
+
+Correct.
+
+Chain rule again.
+
+---
+
+# 13. Is the backprop mathematically wrong?
+
+Surprisingly:
+
+**No.**
+
+The derivatives are actually correct.
+
+I don't see a major backpropagation bug.
+
+---
+
+# 14. Then why doesn't it learn XOR reliably?
+
+Several practical reasons.
+
+## Problem 1: Only 500 updates
+
+You do:
+
+```js
+epoch < 500
+```
+
+But each epoch uses only one random sample.
+
+That means:
+
+```
+500 gradient updates
+```
+
+total.
+
+For XOR that's often too few.
+
+Try:
+
+```js
+epoch < 10000
+```
+
+or
+
+```js
+20000
+```
+
+first.
+
+---
+
+## Problem 2: Learning rate too small
+
+```js
+this.lr = 0.01;
+```
+
+For such a tiny network:
+
+```js
+0.1
+```
+
+often converges much faster.
+
+Try:
+
+```js
+this.lr = 0.1;
+```
+
+---
+
+## Problem 3: Softplus can make learning slow
+
+Softplus is smooth:
+
+[
+\ln(1+e^x)
+]
+
+but its gradient becomes tiny for large negative values.
+
+For XOR tutorials people often use:
+
+```js
+tanh
+```
+
+or
+
+```js
+sigmoid
+```
+
+in hidden layers.
+
+Example:
+
+```js
+function tanh(x){
+    return Math.tanh(x);
+}
+
+function tanhDerivative(y){
+    return 1 - y*y;
+}
+```
+
+where `y` is already the tanh output.
+
+---
+
+## Problem 4: Random initialization
+
+Sometimes you initialize into an unlucky region.
+
+One run learns.
+
+Another run doesn't.
+
+That's normal.
+
+---
+
+# 15. Do you actually have two hidden layers?
+
+No.
+
+You have:
+
+```
+Input layer
+↓
+Hidden layer (2 neurons)
+↓
+Output layer
+```
+
+That's **one hidden layer**.
+
+A true two-hidden-layer network would be:
+
+```
+Input
+↓
+Hidden 1
+↓
+Hidden 2
+↓
+Output
+```
+
+Your code contains two hidden neurons, not two hidden layers.
+
+---
+
+# 16. Do you need both Softplus and Sigmoid?
+
+No.
+
+You need:
+
+### Hidden layer activation
+
+Can be:
+
+* sigmoid
+* tanh
+* ReLU
+* softplus
+
+Choose one.
+
+### Output activation
+
+For XOR:
+
+```js
+sigmoid
+```
+
+is appropriate because output is:
+
+```
+0 or 1
+```
+
+So a common setup is:
+
+```js
+hidden = tanh
+output = sigmoid
+```
+
+or
+
+```js
+hidden = sigmoid
+output = sigmoid
+```
+
+You do **not** need both because of some mathematical requirement.
+
+You use them because they serve different purposes:
+
+* hidden activation introduces nonlinearity
+* output sigmoid converts prediction into a probability-like value between 0 and 1
+
+---
+
+# My main suspicion
+
+The gradients themselves look correct.
+
+The biggest issues are:
+
+```js
+epoch < 500
+```
+
+and
+
+```js
+lr = 0.01
+```
+
+I'd first try:
+
+```js
+this.lr = 0.1;
+```
+
+and
+
+```js
+if (epoch < 10000)
+```
+
+before changing the mathematics. Most likely the network simply hasn't had enough updates to reliably learn XOR.
+
+=====
+---
+=====
+
+These are excellent questions because they get to the heart of *why neural networks work at all*.
+
+---
+
+# What is the purpose of an activation function?
+
+Imagine your network had **no activation functions**.
+
+Then your network would be:
+
+```text
+Input
+ ↓
+Linear Layer
+ ↓
+Linear Layer
+ ↓
+Linear Layer
+ ↓
+Output
+```
+
+Each neuron would just do:
+
+[
+z = wx + b
+]
+
+A linear function.
+
+But here's the surprising fact:
+
+> A bunch of linear functions stacked together is still just one big linear function.
+
+For example:
+
+[
+y = 2(3x+1)+5
+]
+
+becomes:
+
+[
+y = 6x+7
+]
+
+Still a line.
+
+No matter how many layers you add, the network could only learn straight-line relationships.
+
+---
+
+# Why XOR needs an activation function
+
+XOR is not linearly separable.
+
+If you plot:
+
+```text
+(0,0) → 0
+(0,1) → 1
+(1,0) → 1
+(1,1) → 0
+```
+
+you cannot draw a single straight line that separates the 1s from the 0s.
+
+So a purely linear network can never learn XOR.
+
+The activation function introduces **non-linearity**.
+
+This lets the network bend, curve, and combine features in more complex ways.
+
+---
+
+# A useful analogy
+
+Think of weights as knobs controlling a machine.
+
+Without activations:
+
+```text
+Input → gears → gears → gears → Output
+```
+
+Everything is rigid and predictable.
+
+With activations:
+
+```text
+Input → gears → springs → gears → rubber bands → Output
+```
+
+Now the machine can behave in much more interesting ways.
+
+The activation is what gives the network flexibility.
+
+---
+
+# Why does the choice of activation affect training?
+
+Backpropagation relies on derivatives.
+
+The derivative tells us:
+
+> If I tweak this neuron a little, how much does the output change?
+
+The activation function determines:
+
+1. the values flowing forward
+2. the gradients flowing backward
+
+So activations directly affect learning.
+
+---
+
+# Let's compare your three activations
+
+---
+
+## Sigmoid
+
+[
+\sigma(x)=\frac1{1+e^{-x}}
+]
+
+Output:
+
+```text
+0 → 1
+```
+
+Shape:
+
+```text
+      ___
+    /
+  /
+ /
+```
+
+Derivative:
+
+[
+\sigma(x)(1-\sigma(x))
+]
+
+Maximum derivative:
+
+[
+0.25
+]
+
+---
+
+Problem:
+
+When x becomes large:
+
+```text
+sigmoid(100) ≈ 1
+sigmoid(-100) ≈ 0
+```
+
+Derivative becomes:
+
+```text
+≈ 0
+```
+
+Backprop then carries almost no information.
+
+This is called:
+
+> Vanishing gradients
+
+---
+
+# Softplus
+
+[
+softplus(x)=\ln(1+e^x)
+]
+
+Output:
+
+```text
+0 → ∞
+```
+
+Looks like a smooth ReLU.
+
+Derivative:
+
+[
+softplus'(x)=sigmoid(x)
+]
+
+---
+
+Interesting observation:
+
+The derivative of Softplus is literally Sigmoid.
+
+Therefore:
+
+```text
+Large positive x → derivative ≈ 1
+Large negative x → derivative ≈ 0
+```
+
+Still suffers from vanishing gradients on the negative side.
+
+---
+
+# Tanh
+
+[
+tanh(x)
+]
+
+Output:
+
+```text
+-1 → 1
+```
+
+Shape:
+
+```text
+      /
+----/
+   /
+```
+
+Derivative:
+
+[
+1-tanh^2(x)
+]
+
+Maximum derivative:
+
+[
+1
+]
+
+which is much larger than Sigmoid's maximum derivative:
+
+[
+0.25
+]
+
+---
+
+# Why tanh often trains better
+
+This is probably the biggest reason.
+
+Tanh is **zero-centered**.
+
+Outputs:
+
+```text
+-1 ... 0 ... +1
+```
+
+Sigmoid outputs:
+
+```text
+0 ... 1
+```
+
+always positive.
+
+---
+
+Suppose a neuron wants to send:
+
+```text
+"negative evidence"
+```
+
+to another neuron.
+
+Tanh can naturally do:
+
+```text
+-0.8
+```
+
+Sigmoid cannot.
+
+It can only send:
+
+```text
+0.2
+```
+
+which means something completely different.
+
+---
+
+Zero-centered activations usually produce more balanced gradients.
+
+This often leads to faster training.
+
+---
+
+# Why did tanh beat Softplus in your XOR network?
+
+XOR is a tiny problem.
+
+To solve XOR, the hidden neurons typically learn something like:
+
+```text
+Neuron 1:
+"Are the inputs different?"
+
+Neuron 2:
+"Are the inputs the same?"
+```
+
+Those concepts naturally involve positive and negative responses.
+
+Tanh can express:
+
+```text
++1
+```
+
+and
+
+```text
+-1
+```
+
+easily.
+
+Softplus can only produce:
+
+```text
+0 ... ∞
+```
+
+positive values.
+
+So the output layer has to work harder.
+
+---
+
+# Why did Softplus perform worst?
+
+Several reasons:
+
+### 1. Outputs are always positive
+
+[
+softplus(x) > 0
+]
+
+always.
+
+This limits the kinds of internal representations the network can form.
+
+---
+
+### 2. Large negative inputs nearly kill gradients
+
+For:
+
+[
+x=-10
+]
+
+[
+softplus'(x)=sigmoid(-10)
+]
+
+which is:
+
+```text
+0.000045
+```
+
+Tiny gradient.
+
+Learning slows dramatically.
+
+---
+
+### 3. XOR is tiny
+
+Softplus shines more in deeper networks.
+
+For a tiny 2-neuron XOR network, tanh often works better.
+
+---
+
+# How do people choose activation functions?
+
+Historically:
+
+### 1980s–1990s
+
+Mostly:
+
+```text
+Sigmoid
+Tanh
+```
+
+because they are smooth and differentiable.
+
+---
+
+### Around 2010
+
+People realized:
+
+> Deep sigmoid networks train terribly.
+
+because gradients vanish.
+
+---
+
+### ReLU appeared
+
+[
+ReLU(x)=max(0,x)
+]
+
+Suddenly deep networks became trainable.
+
+Huge breakthrough.
+
+---
+
+Today a common default is:
+
+```text
+Hidden layers → ReLU
+Output layer → Depends on task
+```
+
+---
+
+# How are new activation functions discovered?
+
+Mostly experimentation.
+
+Someone asks:
+
+> What if we change the activation slightly?
+
+Then they test it on many tasks.
+
+---
+
+For example:
+
+ReLU:
+
+[
+max(0,x)
+]
+
+was almost embarrassingly simple.
+
+People initially thought:
+
+> Surely a function with a sharp corner can't work.
+
+It worked amazingly.
+
+---
+
+Then came:
+
+* Leaky ReLU
+* ELU
+* SELU
+* GELU
+* Swish
+* Mish
+
+Each was proposed because researchers noticed some weakness in existing activations.
+
+---
+
+# What activation would I recommend for your XOR project?
+
+For learning purposes:
+
+```js
+function tanh(x) {
+    return Math.tanh(x);
+}
+
+function tanhDerivative(y) {
+    return 1 - y * y;
+}
+```
+
+Use:
+
+```js
+hidden layer → tanh
+output layer → sigmoid
+```
+
+This combination is classic, mathematically clean, and tends to learn XOR very reliably.
+
+It's also a great setup for understanding backpropagation because the derivatives stay relatively well-behaved and the network learns meaningful hidden representations.
