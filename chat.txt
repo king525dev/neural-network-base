@@ -1,0 +1,467 @@
+Excellent observations. These are exactly the kinds of questions that help you understand neural networks rather than just copy them.
+
+Let's investigate each one.
+
+---
+
+# 1. Why are weights becoming `NaN`?
+
+The first thing I'd check is your activation functions.
+
+Your Softplus implementation is:
+
+```js
+function softplus(x) { 
+    if (x > 100) return x; 
+    return Math.log(1 + Math.exp(x)); 
+}
+```
+
+and the derivative:
+
+```js
+function softplusDerivative(x) { 
+    return 1 / (1 + Math.exp(-x)); 
+}
+```
+
+At first glance these look fine.
+
+However, consider what happens if a weight becomes very large:
+
+```js
+z1 = 500
+```
+
+Then:
+
+```js
+Math.exp(500)
+```
+
+is approximately
+
+```js
+1.4 × 10^217
+```
+
+still finite.
+
+But:
+
+```js
+Math.exp(1000)
+```
+
+becomes:
+
+```js
+Infinity
+```
+
+in JavaScript.
+
+Now imagine somewhere:
+
+```js
+Infinity * 0
+```
+
+or
+
+```js
+Infinity - Infinity
+```
+
+appears.
+
+The result is:
+
+```js
+NaN
+```
+
+Once one weight becomes `NaN`, every calculation touching it becomes `NaN`, and the whole network collapses.
+
+---
+
+## How to check
+
+Add this inside `train()`:
+
+```js
+if (!Number.isFinite(this.w11)) {
+    console.log("BAD W11");
+}
+```
+
+or:
+
+```js
+[
+ this.w11,
+ this.w12,
+ this.w21,
+ this.w22,
+ this.wo1,
+ this.wo2
+].forEach(w => {
+    if (!Number.isFinite(w))
+        console.log("BAD WEIGHT", w);
+});
+```
+
+to find the first exploding value.
+
+---
+
+# 2. Could the gradients explode?
+
+Yes.
+
+Let's estimate.
+
+Suppose:
+
+```js
+wo1 = 100
+```
+
+Then:
+
+```js
+dLoss_dH1 = dLoss_dZout * wo1
+```
+
+becomes 100× larger.
+
+Then:
+
+```js
+dW_11
+```
+
+becomes huge.
+
+Then:
+
+```js
+w11 -= lr * dW_11
+```
+
+takes a giant step.
+
+Then next iteration:
+
+```js
+w11 = 1000
+```
+
+Then:
+
+```js
+z1 = 1000
+```
+
+Then:
+
+```js
+exp(1000)
+```
+
+→ Infinity
+
+and the collapse begins.
+
+This is called **gradient explosion**.
+
+It happens surprisingly easily in tiny toy networks.
+
+---
+
+# 3. Is skipping hidden biases during backprop an error?
+
+Actually, you're not skipping them.
+
+You compute:
+
+```js
+const dB_h1 =
+    dLoss_dH1 * dH1_dZ1 * 1;
+
+const dB_h2 =
+    dLoss_dH2 * dH2_dZ2 * 1;
+```
+
+and later:
+
+```js
+this.bh1 -= this.lr * dB_h1;
+this.bh2 -= this.lr * dB_h2;
+```
+
+So hidden biases are being updated correctly.
+
+---
+
+# 4. Why is there a "*1" in the bias gradient?
+
+Because a bias is mathematically:
+
+[
+z = wx + b
+]
+
+Derivative wrt bias:
+
+[
+\frac{\partial z}{\partial b}=1
+]
+
+Hence:
+
+```js
+dB = upstreamGradient * 1
+```
+
+which is exactly what you wrote.
+
+Many implementations simply write:
+
+```js
+const dB_h1 = dLoss_dH1 * dH1_dZ1;
+```
+
+because multiplying by 1 is unnecessary.
+
+---
+
+# 5. Should z1 and z2 each have two biases?
+
+This is a very common beginner misconception.
+
+Let's write your neuron:
+
+```js
+z1 =
+x1*w11 +
+x2*w12 +
+bh1
+```
+
+You are thinking:
+
+> Since two weights feed into z1, shouldn't there be two biases?
+
+The answer is:
+
+**No.**
+
+A neuron has:
+
+```js
+N inputs
+N weights
+1 bias
+```
+
+So:
+
+```js
+z1 =
+x1*w11 +
+x2*w12 +
+bh1
+```
+
+is exactly correct.
+
+---
+
+Think of it this way:
+
+Weights control:
+
+> How strongly should I listen to each input?
+
+Bias controls:
+
+> What's my default tendency before hearing any inputs?
+
+A neuron only needs one default tendency.
+
+---
+
+# 6. Why one bias per neuron?
+
+Suppose:
+
+```js
+z =
+w1*x1 +
+w2*x2 +
+b1 +
+b2
+```
+
+Then:
+
+```js
+b1 + b2
+```
+
+can be combined into:
+
+```js
+b
+```
+
+where:
+
+```js
+b = b1 + b2
+```
+
+So multiple biases are redundant.
+
+They add no extra expressive power.
+
+---
+
+# 7. Is your weight naming correct?
+
+Actually there is something slightly confusing.
+
+You wrote:
+
+```js
+z1 = x1*w11 + x2*w12 + bh1
+z2 = x1*w21 + x2*w22 + bh2
+```
+
+Most textbooks would label them:
+
+```js
+z1 = x1*w11 + x2*w21 + bh1
+z2 = x1*w12 + x2*w22 + bh2
+```
+
+so columns correspond to neurons.
+
+Your naming is not wrong.
+
+It's just easy to get confused when deriving gradients.
+
+---
+
+# 8. I think I found the most likely source of NaNs
+
+Your Softplus is only protected on the positive side:
+
+```js
+if (x > 100) return x;
+```
+
+but not numerically stabilized overall.
+
+A safer implementation is:
+
+```js
+function softplus(x) {
+    if (x > 20) return x;
+    if (x < -20) return Math.exp(x);
+    return Math.log1p(Math.exp(x));
+}
+```
+
+and:
+
+```js
+function sigmoid(x) {
+    if (x >= 0) {
+        const z = Math.exp(-x);
+        return 1 / (1 + z);
+    } else {
+        const z = Math.exp(x);
+        return z / (1 + z);
+    }
+}
+```
+
+These avoid overflow much better.
+
+---
+
+# 9. Another thing I'd change immediately
+
+Instead of training on one random sample:
+
+```js
+const sample =
+    data[Math.floor(Math.random()*data.length)];
+```
+
+train on all four XOR examples every epoch:
+
+```js
+for (const sample of data) {
+    net.train(sample.x1, sample.x2, sample.y);
+}
+```
+
+Then:
+
+```js
+epoch++
+```
+
+means one full pass through the dataset.
+
+Training becomes much more stable and easier to debug.
+
+---
+
+# 10. One subtle issue in your architecture
+
+Your hidden activations are:
+
+```js
+h1 = softplus(z1)
+h2 = softplus(z2)
+```
+
+Softplus outputs are always positive:
+
+[
+softplus(x) > 0
+]
+
+This means both hidden neurons can only send positive activations to the output layer.
+
+For XOR, a hidden activation like:
+
+```js
+tanh(z)
+```
+
+which can be negative or positive is often easier to optimize.
+
+Many "from scratch" XOR examples use:
+
+```js
+hidden = tanh
+output = sigmoid
+```
+
+for exactly this reason.
+
+So if I were debugging your code, my checklist would be:
+
+1. Print weights every epoch and find the first one that becomes non-finite.
+2. Add `Number.isFinite(...)` checks.
+3. Replace Softplus with a numerically stable version.
+4. Train on all four XOR samples each epoch.
+5. Consider `tanh` in the hidden layer.
+6. Keep one bias per neuron (your current bias structure is correct).
+
+The fact that the network reaches `NaN` strongly suggests numerical instability or exploding weights rather than a mistake in the chain-rule derivation. The backprop equations themselves look surprisingly solid.
