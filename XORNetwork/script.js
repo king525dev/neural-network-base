@@ -242,14 +242,6 @@ let net = new XORNetwork();
 let epoch = 0;
 const consoleDiv = document.getElementById('console');
 
-// // The XOR truth table
-// const data = [
-//     { x1: 0, x2: 0, y: 0 },
-//     { x1: 0, x2: 1, y: 1 },
-//     { x1: 1, x2: 0, y: 1 },
-//     { x1: 1, x2: 1, y: 0 }
-// ];
-
 function logToConsole(message, type = '') {
     const line = document.createElement('div');
     line.innerHTML = message;
@@ -314,6 +306,8 @@ function step() {
         }
     }
 }
+
+// The XOR truth table
 const data = [
     { x1: 0, x2: 0, y: 0 },
     { x1: 0, x2: 1, y: 1 },
