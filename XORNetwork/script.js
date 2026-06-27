@@ -275,7 +275,7 @@ function step() {
     document.getElementById('epochDisplay').textContent = epoch;
     document.getElementById('lossDisplay').textContent = result.loss.toFixed(6);
     
-    // Log to Console every 5 epochs to avoid spam
+    // Log to Console every 10 epochs to avoid spam
     if (epoch % 10 === 0) {
         const w = result.weights;
         // Format weights nicely
@@ -284,8 +284,8 @@ function step() {
         logToConsole(`<span class="weight">[Epoch ${epoch}]</span> ${predStr} | Loss: <span>${result.loss.toFixed(6)}</span> | ${wStr}`);
     }
     
-    // Stop after 300 epochs (enough to learn XOR perfectly)
-    if (epoch < 10000) {
+    // Stop after 3000 epochs (enough to learn XOR perfectly)
+    if (epoch < 3000) {
         setTimeout(step, 3); 
     } else {
         logToConsole(`<span style="color: #3fb950;">DONE</span><br/>Final Weights: [${result.weights.map(w=>w.toFixed(3)).join(', ')}]`);
