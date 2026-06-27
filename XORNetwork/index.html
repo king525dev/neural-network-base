@@ -1,21 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-sz-theme="obsidian">
 <head>
-    <title>XOR Gate Neural Network</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>XOR Gate Neural Network — Silicon Zen</title>
+
+    <!-- Google Fonts (required by Silicon Zen) -->
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+    <!-- Silicon Zen CSS -->
+    <link rel="stylesheet" href="https://king525dev.github.io/silicon-zen/library/sz.css" />
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div id="container">
-        <h1>XOR Gate Neural Network</h1>
-        <canvas id="canvas" width="700" height="300"></canvas>
-        <div class="status">
-            <span class="badge">Epoch: <span id="epochDisplay">0</span></span>
-            <span class="badge">Loss: <span id="lossDisplay" class="loss-val">1.000</span></span>
+
+<body class="sz-dither">
+
+    <div class="sz-card perceptron-card sz-card--window">
+        <!-- Card header with window-chrome style -->
+        <div class="sz-card__header">
+            <div class="sz-card__dots">
+                <div class="sz-card__dot sz-card__dot--r"></div>
+                <div class="sz-card__dot sz-card__dot--g"></div>
+                <div class="sz-card__dot sz-card__dot--b"></div>
+            </div>
+            <span class="sz-card__title">XOR_NEURAL_NET</span>
+            <span class="sz-card__title">_ □ ×</span>
         </div>
-        <div id="console">
-            > Initializing network weights...
-        </div>
-    </div>
+
+        <!-- Card body -->
+        <div class="sz-card__body">
+
+            <!-- Pixel-style heading -->
+            <div class="pixel-heading" style="margin-bottom:4px;">XOR GATE</div>
+            <div class="mono-dim" style="margin-bottom:12px;">2‑layer perceptron · tanh activation</div>
+
+            <!-- Canvas -->
+            <canvas id="canvas" width="700" height="300"></canvas>
+
+            <!-- Status row -->
+            <div class="status-row">
+                <span class="badge">Epoch: <span id="epochDisplay">0</span></span>
+                <span class="badge">Loss: <span id="lossDisplay" class="loss-val">1.000000</span></span>
+            </div>
+
+            <!-- Control buttons -->
+            <div class="btn-group">
+                <button class="sz-btn sz-btn--sm" id="resetBtn">[ Reset ]</button>
+                <button class="sz-btn sz-btn--sm sz-btn--solid" id="trainBtn">[ Train ]</button>
+                <span class="mono-dim" style="margin-left:auto;align-self:center;" id="statusLabel">ready</span>
+            </div>
+
+            <!-- Log / CLI output -->
+            <div class="log-cli" id="log">
+                <span class="prompt">■</span> <span class="muted">XOR network ready.</span>
+                <span class="muted">  data: (0,0)→0 &nbsp;(0,1)→1 &nbsp;(1,0)→1 &nbsp;(1,1)→0</span>
+            </div>
+
+        </div><!-- /card-body -->
+    </div><!-- /sz-card -->
+
+    <!-- Silicon Zen JS (optional, enables theme toggling) -->
+    <script src="https://king525dev.github.io/silicon-zen/library/sz.js"></script>
     <script src="script.js"></script>
+
 </body>
 </html>
