@@ -1,19 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AND Gate Perceptron</title>
+<title>OR Gate Perceptron</title>
+<!-- Google Fonts (required by Silicon Zen) -->
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+<!-- Silicon Zen CSS -->
+<link rel="stylesheet" href="https://king525dev.github.io/silicon-zen/library/sz.css" />
 <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div class="container">
-  <h2>AND Gate Perceptron</h2>
-  <canvas id="canvas" width="600" height="240"></canvas>
-  <div class="status">
-    <span class="badge">Epoch: <span id="epochDisplay">0</span></span>
-    <span class="badge">Loss: <span id="lossDisplay" class="loss-val">1.000</span></span>
-  </div>
-  <div id="log">> Training AND gate...</div>
-</div>
+<body class="sz-dither">
+  <div class="sz-card perceptron-card sz-card--window">
+      <!-- Card header with window-chrome style -->
+      <div class="sz-card__header">
+          <div class="sz-card__dots">
+              <div class="sz-card__dot sz-card__dot--r"></div>
+              <div class="sz-card__dot sz-card__dot--g"></div>
+              <div class="sz-card__dot sz-card__dot--b"></div>
+          </div>
+          <span class="sz-card__title">OR_GATE_PERCEPTRON</span>
+          <span class="sz-card__title">_ □ ×</span>
+      </div>
+
+      <!-- Card body -->
+      <div class="sz-card__body">
+
+          <!-- Pixel-style heading -->
+          <div class="pixel-heading" style="margin-bottom:4px;">OR GATE</div>
+          <div class="mono-dim" style="margin-bottom:12px;">single‑layer perceptron · sigmoid activation</div>
+
+          <!-- Canvas -->
+          <canvas id="canvas" width="600" height="220"></canvas>
+
+          <!-- Status row -->
+          <div class="status-row">
+              <span class="badge">Epoch: <span id="epochDisplay">0</span></span>
+              <span class="badge">Loss: <span id="lossDisplay" class="loss-val">1.000000</span></span>
+          </div>
+
+          <!-- Control buttons -->
+          <div class="btn-group">
+              <button class="sz-btn sz-btn--sm" id="resetBtn">[ Reset ]</button>
+              <button class="sz-btn sz-btn--sm sz-btn--solid" id="trainBtn">[ Train ]</button>
+              <span class="mono-dim" style="margin-left:auto;align-self:center;" id="statusLabel">ready</span>
+          </div>
+
+          <!-- Log / CLI output -->
+          <div class="log-cli" id="log">
+              <span class="prompt">■</span> <span class="muted">OR gate training ready.</span>
+              <span class="muted">  data: (0,0)→0 &nbsp;(0,1)→1 &nbsp;(1,0)→1 &nbsp;(1,1)→1</span>
+          </div>
+
+      </div><!-- /card-body -->
+  </div><!-- /sz-card -->
+
+    <!-- Silicon Zen JS (optional, but enables theme toggling etc.) -->
+    <script src="https://king525dev.github.io/silicon-zen/library/sz.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
