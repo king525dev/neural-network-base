@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AND Gate - Single Neuron</title>
+<title>AND Gate Perceptron</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="box">
-  <h2>AND Gate (Single Neuron)</h2>
-  <div class="neuron">
-    <div class="circle">X1</div>
-    <div class="line"></div>
-    <div class="circle" style="border-color: #ff7b72;">Σ</div>
-    <div class="line"></div>
-    <div class="circle" style="border-color: #3fb950;">OUT</div>
+<div class="container">
+  <h2>AND Gate Perceptron</h2>
+  <canvas id="canvas" width="600" height="240"></canvas>
+  <div class="status">
+    <span class="badge">Epoch: <span id="epochDisplay">0</span></span>
+    <span class="badge">Loss: <span id="lossDisplay" class="loss-val">1.000</span></span>
   </div>
   <div id="log">> Training AND gate...</div>
-  <script src="script.js"></script>
 </div>
+<script src="script.js"></script>
 </body>
 </html>
