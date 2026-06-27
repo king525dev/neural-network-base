@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en" data-sz-theme="obsidian">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neural Network Base</title>
+
+  <!-- Google Fonts (required by Silicon Zen) -->
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,700;1,6..72,400&family=JetBrains+Mono:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet" />
+
+  <!-- Silicon Zen CSS -->
+  <link rel="stylesheet" href="https://king525dev.github.io/silicon-zen/library/sz.css" />
+
+  <style>
+    body {
+      background: var(--sz-bg);
+      color: var(--sz-text);
+      font-family: var(--sz-font-serif);
+      line-height: 1.65;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .dashboard-card {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .pixel-heading {
+      font-family: var(--sz-font-pixel);
+      font-size: 16px;
+      letter-spacing: 0.06em;
+      color: var(--sz-teal);
+    }
+
+    .mono-dim {
+      font-family: var(--sz-font-mono);
+      font-size: 11px;
+      color: var(--sz-text-dim);
+      letter-spacing: 0.5px;
+    }
+
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: calc(var(--sz-grid) * 5);
+      margin: 24px 0;
+    }
+
+    .demo-card {
+      background: var(--sz-surface);
+      border: 1px solid var(--sz-border-dim);
+      padding: calc(var(--sz-grid) * 5);
+      transition: var(--sz-snap);
+    }
+    .demo-card:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 4px 4px 0 var(--sz-border-dim);
+    }
+
+    .demo-card .card-title {
+      font-family: var(--sz-font-mono);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--sz-teal);
+      margin-bottom: 4px;
+    }
+
+    .demo-card .card-desc {
+      font-family: var(--sz-font-serif);
+      font-size: 13px;
+      color: var(--sz-text-dim);
+      margin-bottom: 12px;
+    }
+
+    .footer-links {
+      border-top: 1px solid var(--sz-border-dim);
+      padding-top: calc(var(--sz-grid) * 4);
+      margin-top: calc(var(--sz-grid) * 4);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--sz-font-mono);
+      font-size: 11px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .footer-links a {
+      color: var(--sz-teal);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: var(--sz-snap);
+    }
+    .footer-links a:hover {
+      border-bottom-color: var(--sz-teal);
+    }
+
+    @media (max-width: 600px) {
+      .sz-card__body { padding: calc(var(--sz-grid) * 4) !important; }
+      .pixel-heading { font-size: 13px; }
+      .demo-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body class="sz-dither">
+
+  <div class="sz-card dashboard-card sz-card--window">
+    <!-- Card header -->
+    <div class="sz-card__header">
+      <div class="sz-card__dots">
+        <div class="sz-card__dot sz-card__dot--r"></div>
+        <div class="sz-card__dot sz-card__dot--g"></div>
+        <div class="sz-card__dot sz-card__dot--b"></div>
+      </div>
+      <span class="sz-card__title">NEURAL_NETWORK_BASE</span>
+      <span class="sz-card__title">_ □ ×</span>
+    </div>
+
+    <div class="sz-card__body">
+      <!-- Brand -->
+      <div class="pixel-heading">NEURAL NETWORK BASE</div>
+      <div class="mono-dim" style="margin-bottom:20px;">Perceptrons &amp; Multi‑Layer Networks · Silicon Zen Edition</div>
+
+      <!-- Demo grid -->
+      <div class="demo-grid">
+        <!-- AND Perceptron -->
+        <div class="demo-card">
+          <div class="card-title">AND PERCEPTRON</div>
+          <div class="card-desc">Single‑layer perceptron solving the AND logic gate. Sigmoid activation.</div>
+          <a href="ANDNetwork/index.html" class="sz-btn sz-btn--sm">[ Launch ]</a>
+        </div>
+
+        <!-- OR Perceptron -->
+        <div class="demo-card">
+          <div class="card-title">OR PERCEPTRON</div>
+          <div class="card-desc">Single‑layer perceptron solving the OR logic gate. Sigmoid activation.</div>
+          <a href="ORNetwork/index.html" class="sz-btn sz-btn--sm">[ Launch ]</a>
+        </div>
+
+        <!-- XOR Neural Network -->
+        <div class="demo-card">
+          <div class="card-title">XOR NEURAL NETWORK</div>
+          <div class="card-desc">Two‑layer network with tanh activation solving the XOR problem.</div>
+          <a href="XORNetwork/index.html" class="sz-btn sz-btn--sm">[ Launch ]</a>
+        </div>
+      </div>
+
+      <!-- Footer / README link -->
+      <div class="footer-links">
+        <span>Built with <a href="https://github.com/king525dev/silicon-zen" target="_blank">Silicon Zen</a></span>
+        <a href="readme.md">Read about Neural Networks →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Silicon Zen JS -->
+  <script src="https://king525dev.github.io/silicon-zen/library/sz.js"></script>
+</body>
+</html>
