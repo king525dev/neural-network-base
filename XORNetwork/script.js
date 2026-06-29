@@ -99,7 +99,7 @@ let net = new XORNetwork();
 let epoch = 0;
 let running = false;
 let timer = null;
-const START_EPOCHS = 1500;
+const START_EPOCHS = 2500;
 let MAX_EPOCHS = START_EPOCHS;
 
 // ── DRAWING NETWORK (adapted for XOR architecture) ──
