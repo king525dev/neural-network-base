@@ -36,7 +36,7 @@ class XORNetwork {
         this.bh1 = Math.random() * 2 - 1;
         this.bh2 = Math.random() * 2 - 1;
         this.bout = Math.random() * 2 - 1;
-        this.lr = 0.1;
+        this.lr = 0.05;
     }
 
     // Forward pass
@@ -99,7 +99,7 @@ let net = new XORNetwork();
 let epoch = 0;
 let running = false;
 let timer = null;
-const START_EPOCHS = 2500;
+const START_EPOCHS = 3000;
 let MAX_EPOCHS = START_EPOCHS;
 
 // ── DRAWING NETWORK (adapted for XOR architecture) ──
@@ -215,9 +215,19 @@ function logMessage(html, cls = '') {
 function trainLoop() {
     if (!running) return;
 
-    // Train on a random sample
-    const sample = data[Math.floor(Math.random() * data.length)];
-    const result = net.train(sample.x1, sample.x2, sample.y);
+    // Train on all samples
+    let totalLoss = 0;
+    let result;
+
+    const shuffled = [...data].sort(() => Math.random() - 0.5);
+
+    for (const sample of shuffled) {
+        result = net.train(sample.x1, sample.x2, sample.y);
+        totalLoss += result.loss;
+    }
+
+    const avgLoss = totalLoss / data.length;
+
     epoch++;
 
     epochSpan.textContent = epoch;
@@ -282,7 +292,7 @@ function resetPerceptron() {
 function startTraining() {
     if (running) return;
     if (epoch >= MAX_EPOCHS) {
-        MAX_EPOCHS += 500; // extend training if already done
+        MAX_EPOCHS += 1500; // extend training if already done
     }
     running = true;
     statusLabel.textContent = 'training…';
