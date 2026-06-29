@@ -170,7 +170,7 @@ function trainLoop() {
     lossSpan.textContent = avgLoss.toFixed(6);
     drawNetwork(w1, w2, b, avgLoss);
 
-    if (epochs % 10 === 0) {
+    if (epochs % 5 === 0) {
         logMessage(
             `<span class="weight">[Epoch ${epochs}]</span> Loss: <span class="loss">${avgLoss.toFixed(6)}</span> | w1: ${w1.toFixed(3)}, w2: ${w2.toFixed(3)}, b: ${b.toFixed(3)}`
             );
